@@ -20,14 +20,14 @@ module ActiveRecord
             throw(:abort)
           end
 
+        when :destroy
+          # No point in executing the counter update since we're going to destroy the parent anyway
+          load_target.each { |t| t.destroyed_by_association = reflection }
+          destroy_all
+
         else
-          if options[:dependent] == :destroy
-            # No point in executing the counter update since we're going to destroy the parent anyway
-            load_target.each { |t| t.destroyed_by_association = reflection }
-            destroy_all
-          else
-            delete_all
-          end
+          delete_all
+
         end
       end
 
